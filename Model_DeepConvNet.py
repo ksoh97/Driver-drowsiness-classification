@@ -84,5 +84,3 @@ class DeepConvNet(nn.Module):
 
     def get_embedding(self, x):
         return self.forward(x)
-
-
