@@ -1,0 +1,1 @@
+Namespace(batch_size=8, data_root='/DataCommon2/ksoh/perceptron_course/Driver_drowsiness_classification1/dataset/', epochs=100, gpuidx=0, lr=0.001, n_channels=30, n_classes=2, n_timewindow=750, result_dir='Baseline_Deepconvnet', save_root='/DataCommon2/ksoh/perceptron_course/Driver_drowsiness_classification1/')
