@@ -20,7 +20,7 @@ if GPU == -1:
 else:
     devices = "%d" % GPU
 
-os.environ["CUDA_VISIBLE_DEVICES"] = devices
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
 ###########################################################################
 # get weights (use the number of samples)
@@ -108,7 +108,7 @@ def Experiment(args, subjectList ,subject_id):
     test_loader = torch.utils.data.DataLoader(test_set, batch_size=args.batch_size, shuffle=False)
 
     """ Training, Validation """
-    best_balanced_acc = 0
+    best_acc, best_balanced_acc = 0, 0
     for epochidx in range(1, args.epochs):
         print("EPOCH_IDX: ", epochidx)
         Train(20, model, device, train_loader, optimizer, scheduler)
@@ -118,7 +118,7 @@ def Experiment(args, subjectList ,subject_id):
         # if validation accuracy >= best accuracy, then save model(.pt)
         if valid_balanced_score >= best_balanced_acc:
             print("Higher accuracy then before: epoch {}".format(epochidx))
-            best_balanced_acc = valid_balanced_score
+            best_acc, best_balanced_acc = valid_score, valid_balanced_score
             torch.save(model.state_dict(), os.path.join(path, 'models',"subject{}_bestmodel".format(subject_id+1)))
 
     """ Inference """
@@ -128,7 +128,7 @@ def Experiment(args, subjectList ,subject_id):
     pred = predict_EVAL(best_model, device, test_loader)
     np.save(os.path.join(path, 'prediction', "subject{}_pred.npy".format(subject_id+1)), pred)
 
-    return valid_score, valid_balanced_score
+    return best_acc, best_balanced_acc
 
 ###########################################################################
 if __name__ == '__main__':
@@ -136,7 +136,7 @@ if __name__ == '__main__':
     """ Experiment Setting """ 
     # ARGUMENT
     parser = argparse.ArgumentParser(description='Reaction Time')
-    parser.add_argument('--result-dir', default="proposed_method")  # save folder name
+    parser.add_argument('--result-dir', default="Proposed_method")  # save folder name
     parser.add_argument('--data-root', default='/DataCommon2/ksoh/perceptron_course/Driver_drowsiness_classification1/dataset/')
     parser.add_argument('--save-root', default='/DataCommon2/ksoh/perceptron_course/Driver_drowsiness_classification1/')
     parser.add_argument('--n_classes', default=2)
