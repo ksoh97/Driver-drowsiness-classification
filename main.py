@@ -10,8 +10,7 @@ import GPUtil
 
 from Model_DeepConvNet import DeepConvNet
 from Model_ESTCNN import ESTCNN
-from Model_ESTCNN import ESTCNN_moreblock
-from Model_ESTCNN import ESTCNN_2moreblock
+from Model_ESTCNN import Proposed_model
 from train_eval_predict import Train, valid_EVAL, predict_EVAL  # train, evaluation, prediction
 
 GPU = -1
@@ -21,7 +20,7 @@ if GPU == -1:
 else:
     devices = "%d" % GPU
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "5"
+os.environ["CUDA_VISIBLE_DEVICES"] = devices
 
 ###########################################################################
 # get weights (use the number of samples)
@@ -86,7 +85,7 @@ def Experiment(args, subjectList ,subject_id):
     np.random.seed(seed)
 
     # MODEL
-    model = ESTCNN_moreblock(args.n_classes, args.n_channels, args.n_timewindow)
+    model = Proposed_model(args.n_classes, args.n_channels, args.n_timewindow)
     if cuda: model.cuda(device=device) # connect DEVICE
 
     # OPTIMIZER, LEARNING SCHEDULER
@@ -123,7 +122,7 @@ def Experiment(args, subjectList ,subject_id):
             torch.save(model.state_dict(), os.path.join(path, 'models',"subject{}_bestmodel".format(subject_id+1)))
 
     """ Inference """
-    best_model = ESTCNN_moreblock(args.n_classes, args.n_channels, args.n_timewindow)
+    best_model = Proposed_model(args.n_classes, args.n_channels, args.n_timewindow)
     best_model.load_state_dict(torch.load(os.path.join(path, 'models', "subject{}_bestmodel".format(subject_id+1))))
     if cuda: best_model.cuda(device=device)
     pred = predict_EVAL(best_model, device, test_loader)
@@ -137,7 +136,7 @@ if __name__ == '__main__':
     """ Experiment Setting """ 
     # ARGUMENT
     parser = argparse.ArgumentParser(description='Reaction Time')
-    parser.add_argument('--result-dir', default="ESTCNN_moreblock_ELU_drop0.2_cls1024_50")  # save folder name
+    parser.add_argument('--result-dir', default="proposed_method")  # save folder name
     parser.add_argument('--data-root', default='/DataCommon2/ksoh/perceptron_course/Driver_drowsiness_classification1/dataset/')
     parser.add_argument('--save-root', default='/DataCommon2/ksoh/perceptron_course/Driver_drowsiness_classification1/')
     parser.add_argument('--n_classes', default=2)
