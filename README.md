@@ -23,4 +23,4 @@ python ≥ 3.8.10   numpy ≥ 1.20.3  pandas ≥ 1.2.5  scipy ≥ 1.6.2   torch 
 sklearn   random  os  argparse  collection
 
 -------------------
-test에 대한 predicted 값들은 각 모델명 + "prediction" 이하 파일에 저장되어 있습니다.
+The predicted values for test are stored in files under each model name + "prediction".
